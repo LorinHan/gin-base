@@ -21,7 +21,7 @@
     - 使用前需要先安装`swaggo`
     ```
     go get -u github.com/swaggo/swag/cmd/swag
-    swag init -h 可以查看相关命令
+    swag init -h 可以查看相关命令2
     ```
   
 - 2020-08-28 

@@ -1,0 +1,10 @@
+database:
+  dbtype: mysql
+  host: 127.0.0.1
+  username: root
+  password: joker8133xx
+  dbname: test
+  args: charset=utf8&parseTime=True&loc=Local
+
+# debug info warning error panic fatal trace
+loglevel: debug

@@ -9,14 +9,14 @@ type Rest struct {
 	Message string
 }
 
-func Res(status int, data interface{}, message string) *Rest{
-	return &Rest{status, data, message}
+func New(status int, data interface{}, message string) (int, *Rest) {
+	return http.StatusOK, &Rest{status, data, message}
 }
 
-func Success(data interface{}) *Rest {
-	return &Rest{http.StatusOK, data, "success"}
+func Success(data interface{}) (int, *Rest) {
+	return http.StatusOK, &Rest{http.StatusOK, data, "success"}
 }
 
-func Error(message string) *Rest {
-	return &Rest{http.StatusInternalServerError, nil, message}
+func Error(message string) (int, *Rest) {
+	return http.StatusOK, &Rest{http.StatusInternalServerError, nil, message}
 }

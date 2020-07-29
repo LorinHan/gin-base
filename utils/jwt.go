@@ -5,13 +5,12 @@ import (
 	"ginTest/utils/Rest"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"strings"
 	"time"
 )
 
 
-type MyClaims struct {
+type JwtUser struct {
 	Username string `json:"username"`
 	Role string
 	jwt.StandardClaims
@@ -22,7 +21,7 @@ var MySecret = []byte("夏天夏天悄悄过去")
 
 func GenToken(username string) (string, error) {
 	// 创建一个我们自己的声明
-	c := MyClaims{
+	c := JwtUser{
 		username,
 		"role",
 		jwt.StandardClaims{
@@ -37,15 +36,15 @@ func GenToken(username string) (string, error) {
 }
 
 // ParseToken 解析JWT
-func ParseToken(tokenString string) (*MyClaims, error) {
+func ParseToken(tokenString string) (*JwtUser, error) {
 	// 解析token
-	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (i interface{}, err error) {
+	token, err := jwt.ParseWithClaims(tokenString, &JwtUser{}, func(token *jwt.Token) (i interface{}, err error) {
 		return MySecret, nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid { // 校验token
+	if claims, ok := token.Claims.(*JwtUser); ok && token.Valid { // 校验token
 		return claims, nil
 	}
 	return nil, errors.New("invalid token")
@@ -57,27 +56,27 @@ func JWTAuthMiddleware(role string) func(c *gin.Context) {
 		// 从请求头中获取token
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
-			c.JSON(http.StatusOK, Rest.Error("请求头中auth为空"))
+			c.JSON(Rest.Error("请求头中auth为空"))
 			c.Abort()
 			return
 		}
 		// 按空格分割
 		parts := strings.SplitN(authHeader, " ", 2)
 		if !(len(parts) == 2 && parts[0] == "Bearer") {
-			c.JSON(http.StatusOK, Rest.Error("请求头中auth格式有误"))
+			c.JSON(Rest.Error("请求头中auth格式有误"))
 			c.Abort()
 			return
 		}
 		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
 		mc, err := ParseToken(parts[1])
 		if err != nil {
-			c.JSON(http.StatusOK, Rest.Error("无效的token"))
+			c.JSON(Rest.Error("无效的token"))
 			c.Abort()
 			return
 		}
 		// 验证角色
 		if mc.Role != role {
-			c.JSON(http.StatusOK, Rest.Res(403, nil, "没有" + role + "角色权限"))
+			c.JSON(Rest.New(403, nil, "没有" + role + "角色权限"))
 			c.Abort()
 			return
 		}

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 )
 
 type Config struct {
@@ -17,9 +18,17 @@ type Config struct {
 		Args string `yaml:"args"`
 	}
 	LogLevel string `yaml:"loglevel"`
+	Jwt struct {
+		Expired time.Duration `yaml:"expired"`
+		Secret string `yaml:"secret"`
+	}
 }
 
-var Conf = &Config{}
+var (
+	Conf = &Config{}
+	Jwt = &Conf.Jwt
+	Database = &Conf.Database
+)
 
 func init() {
 	pwd, _ := os.Getwd()

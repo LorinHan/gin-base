@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"ginTest/conf"
 	"ginTest/utils/Rest"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -15,9 +16,8 @@ type JwtUser struct {
 	Role string
 	jwt.StandardClaims
 }
-
-const TokenExpireDuration = time.Hour * 2
-var MySecret = []byte("夏天夏天悄悄过去")
+var TokenExpireDuration = time.Hour * conf.Jwt.Expired
+var MySecret = []byte(conf.Jwt.Secret)
 
 func GenToken(username string) (string, error) {
 	// 创建一个我们自己的声明

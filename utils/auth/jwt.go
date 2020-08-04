@@ -18,8 +18,8 @@ type JwtUser struct {
 var TokenExpireDuration = time.Hour * conf.Jwt.Expired
 var MySecret = []byte(conf.Jwt.Secret)
 
+// GenToken，生成token
 func GenToken(username string) (string, error) {
-	// 创建一个我们自己的声明
 	c := JwtUser{
 		username,
 		"role",
@@ -49,7 +49,7 @@ func ParseToken(tokenString string) (*JwtUser, error) {
 	return nil, errors.New("invalid token")
 }
 
-// JWTAuthMiddleware 基于JWT的认证中间件
+// AuthMiddleware 基于JWT的认证中间件
 func AuthMiddleware(role string) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		// 从请求头中获取token

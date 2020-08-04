@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "ginTest/conf"
+	"ginTest/router"
 	"ginTest/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,7 @@ func main() {
 	r := gin.Default()
 	r.Use(utils.LoggerToFile())
 
-	InitRouter(r)
+	router.Init(r)
 	// defer mysql.DB.Close()
 
 	r.Run(":8080")

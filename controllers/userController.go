@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"ginTest/models"
 	"ginTest/mysql"
-	"ginTest/utils/jwt"
+	"ginTest/utils/auth"
 	"ginTest/utils/rest"
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +23,7 @@ func (u *userCtl) JwtLogin(c *gin.Context) {
 	// 校验用户名和密码是否正确
 	if user.Username == "admin" && user.Password == "ff1234" {
 		// 生成Token
-		tokenString, _ := jwt.GenToken(user.Username)
+		tokenString, _ := auth.GenToken(user.Username)
 		c.JSON(rest.Success(tokenString))
 		return
 	}
@@ -33,6 +33,6 @@ func (u *userCtl) JwtLogin(c *gin.Context) {
 	测试获取jwt参数
  */
 func (u *userCtl) NeedAuth(c *gin.Context) {
-	user := c.MustGet("user").(*jwt.JwtUser)
+	user := c.MustGet("user").(*auth.JwtUser)
 	c.JSON(rest.Success(&user))
 }

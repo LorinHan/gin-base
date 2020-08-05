@@ -2,3 +2,5 @@ _Store
 *.log
 *.gz
 logs
+.idea
+.DS_Store

@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "ginTest/conf"
-	"ginTest/router"
-	"ginTest/utils"
+	_ "gin-base/conf"
+	"gin-base/router"
+	"gin-base/utils"
 	"github.com/gin-gonic/gin"
 )
 

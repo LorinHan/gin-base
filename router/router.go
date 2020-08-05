@@ -1,8 +1,8 @@
 package router
 
 import (
-	"ginTest/controllers"
-	"ginTest/utils/auth"
+	"gin-base/controllers"
+	"gin-base/utils/auth"
 	"github.com/gin-gonic/gin"
 )
 

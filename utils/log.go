@@ -2,7 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"ginTest/conf"
+	"gin-base/conf"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"os"

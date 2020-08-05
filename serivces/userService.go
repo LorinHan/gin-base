@@ -2,7 +2,7 @@ package serivces
 
 import (
 	"errors"
-	"ginTest/models"
+	"gin-base/models"
 )
 
 type userService struct{}

@@ -2,8 +2,8 @@ package auth
 
 import (
 	"errors"
-	"ginTest/conf"
-	"ginTest/utils/rest"
+	"gin-base/conf"
+	"gin-base/utils/rest"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"strings"

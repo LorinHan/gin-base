@@ -1,7 +1,7 @@
 package models
 
 import (
-	"ginTest/mysql"
+	"gin-base/mysql"
 	"log"
 )
 

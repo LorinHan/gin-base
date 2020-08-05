@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"fmt"
-	"ginTest/models"
-	"ginTest/mysql"
-	"ginTest/utils/auth"
-	"ginTest/utils/rest"
+	"gin-base/models"
+	"gin-base/mysql"
+	"gin-base/utils/auth"
+	"gin-base/utils/rest"
 	"github.com/gin-gonic/gin"
 )
 

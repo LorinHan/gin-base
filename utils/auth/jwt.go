@@ -12,9 +12,10 @@ import (
 
 type JwtUser struct {
 	Username string `json:"username"`
-	Role string
+	Role     string
 	jwt.StandardClaims
 }
+
 var TokenExpireDuration = time.Hour * conf.Jwt.Expired
 var MySecret = []byte(conf.Jwt.Secret)
 
@@ -55,32 +56,32 @@ func AuthMiddleware(role string) func(c *gin.Context) {
 		// 从请求头中获取token
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
-			c.JSON(rest.Error("请求头中auth为空"))
+			rest.Error(c, "请求头中auth为空")
 			c.Abort()
 			return
 		}
 		// 按空格分割
 		parts := strings.SplitN(authHeader, " ", 2)
 		if !(len(parts) == 2 && parts[0] == "Bearer") {
-			c.JSON(rest.Error("请求头中auth格式有误"))
+			rest.Error(c, "请求头中auth格式有误")
 			c.Abort()
 			return
 		}
 		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
 		mc, err := ParseToken(parts[1])
 		if err != nil {
-			c.JSON(rest.Error("无效的token"))
+			rest.Error(c, "无效的token")
 			c.Abort()
 			return
 		}
 		// 验证角色
 		if mc.Role != role {
-			c.JSON(rest.New(403, nil, "没有" + role + "角色权限"))
+			rest.New(c, 403, nil, "没有"+role+"角色权限")
 			c.Abort()
 			return
 		}
 		// 将当前请求的user信息保存到请求的上下文c上
 		c.Set("user", mc)
-		c.Next() // 后续的处理函数可以用过 c.Get("user").(*utils.MyClaims) 来获取当前请求的用户信息
+		c.Next() // 后续的处理函数可以用过 c.Get("user").(*auth.JwtUser) 来获取当前请求的用户信息
 	}
 }

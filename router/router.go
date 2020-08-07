@@ -7,10 +7,10 @@ import (
 )
 
 func Init(r *gin.Engine) {
-	r.POST("/login", controllers.UserCtl.JwtLogin)
+	r.POST("/login", controllers.JwtLogin)
 	user := r.Group("user", auth.AuthMiddleware("role")) // 中间件可以放在普通路由也可以放在Group上
 	{
-		user.GET("/needAuth", controllers.UserCtl.NeedAuth)
+		user.GET("/needAuth", controllers.NeedAuth)
 		//user.POST("/login4/:username/:password", controllers.UserCtl.Login4)
 		//user.GET("/find/page/:page", controllers.UserCtl.FindUsersNative)
 	}

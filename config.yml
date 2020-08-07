@@ -5,6 +5,9 @@ database:
   password: joker8133xx
   dbname: test
   args: charset=utf8&parseTime=True&loc=Local
+  maxIdleConns: 5
+  maxOpenConns: 30
+  maxLifetime: 30
 
 # debug info warning error panic fatal trace
 loglevel: debug

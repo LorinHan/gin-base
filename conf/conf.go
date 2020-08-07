@@ -16,6 +16,9 @@ type Config struct {
 		Password string `yaml:"password"`
 		DbName string `yaml:"dbname"`
 		Args string `yaml:"args"`
+		MaxIdleConns int `yaml:"maxIdleConns"`
+		MaxOpenConns int `yaml:"maxOpenConns"`
+		MaxLifetime int `yaml:"maxLifetime"`
 	}
 	LogLevel string `yaml:"loglevel"`
 	Jwt struct {

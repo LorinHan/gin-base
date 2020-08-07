@@ -1,7 +1,6 @@
 package models
 
 import (
-	"gin-base/mysql"
 	"log"
 )
 
@@ -14,20 +13,20 @@ type User struct {
 func FindUserByPwd(password string) []*User {
 	var users []*User
 	//mysql.DB.Where("password = ?", password).Find(&users)
-	mysql.DB.Where("password = ?", password).Offset(1).Limit(2).Find(&users)
+	db.Where("password = ?", password).Offset(1).Limit(2).Find(&users)
 	return users
 }
 
-func FindUserById(id int64) (*User, error){
+func FindUserById(id int64) (*User, error) {
 	var user User
-	if err := mysql.DB.First(&user, id).Error; err != nil {
+	if err := db.First(&user, id).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
 func FindUsersNative(begin int, size int) []*User {
-	rows, err := mysql.DB.Raw("select id, username, password from users limit ?, ?", begin, size).Rows()
+	rows, err := db.Raw("select id, username, password from users limit ?, ?", begin, size).Rows()
 	if err != nil {
 		log.Print(err)
 	}

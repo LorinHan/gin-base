@@ -7,9 +7,9 @@ import (
 
 type userService struct{}
 
-var UserService = &userService{}
+//var UserService = &serService{}
 
-func (us *userService) FindUserByPwd(password string) ([]*models.User, error) {
+func (userService) FindUserByPwd(password string) ([]*models.User, error) {
 	users := models.FindUserByPwd(password)
 	if len(users) <= 0 {
 		return nil, errors.New("not found")

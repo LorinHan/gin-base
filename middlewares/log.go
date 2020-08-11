@@ -1,4 +1,4 @@
-package utils
+package middlewares
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ func Logger() *logrus.Logger {
 	if err := os.MkdirAll(logFilePath, 0777); err != nil {
 		fmt.Println(err.Error())
 	}
-	logFileName := now.Format("2006-01-02") + ".log"
+	logFileName := now.Format("2006-01-02") + ".logs"
 	//日志文件
 	fileName := path.Join(logFilePath, logFileName)
 	if _, err := os.Stat(fileName); err != nil {

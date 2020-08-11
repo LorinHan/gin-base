@@ -1,4 +1,4 @@
-package auth
+package middlewares
 
 import (
 	"errors"
@@ -51,7 +51,7 @@ func ParseToken(tokenString string) (*JwtUser, error) {
 }
 
 // AuthMiddleware 基于JWT的认证中间件
-func AuthMiddleware(role string) func(c *gin.Context) {
+func Auth() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		// 从请求头中获取token
 		authHeader := c.Request.Header.Get("Authorization")
@@ -75,11 +75,11 @@ func AuthMiddleware(role string) func(c *gin.Context) {
 			return
 		}
 		// 验证角色
-		if mc.Role != role {
-			rest.New(c, 403, nil, "没有"+role+"角色权限")
-			c.Abort()
-			return
-		}
+		//if mc.Role != role {
+		//	rest.New(c, 403, nil, "没有"+role+"角色权限")
+		//	c.Abort()
+		//	return
+		//}
 		// 将当前请求的user信息保存到请求的上下文c上
 		c.Set("user", mc)
 		c.Next() // 后续的处理函数可以用过 c.Get("user").(*auth.JwtUser) 来获取当前请求的用户信息

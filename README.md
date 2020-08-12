@@ -9,3 +9,7 @@
     - 先把项目根目录 gin-base改为 test
     - 然后把go.mod中的module 改为 test
     - goLand中 `ctrl + shift + r`或`command + shift + r`，全局替换 `"gin-base/` 为 `"test/`
+    
+- 2020-08-12
+    - `logrus` 换为 `zap`
+    - 加入`lumberjack` 日志归档

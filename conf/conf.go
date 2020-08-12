@@ -10,27 +10,35 @@ import (
 
 type Config struct {
 	Database struct {
-		DbType string `yaml:"dbtype"`
-		Host string `yaml:"host"`
-		UserName string `yaml:"username"`
-		Password string `yaml:"password"`
-		DbName string `yaml:"dbname"`
-		Args string `yaml:"args"`
-		MaxIdleConns int `yaml:"maxIdleConns"`
-		MaxOpenConns int `yaml:"maxOpenConns"`
-		MaxLifetime int `yaml:"maxLifetime"`
+		DbType       string `yaml:"dbType"`
+		Host         string `yaml:"host"`
+		UserName     string `yaml:"userName"`
+		Password     string `yaml:"passWord"`
+		DbName       string `yaml:"dbName"`
+		Args         string `yaml:"args"`
+		MaxIdleConns int    `yaml:"maxIdleConns"`
+		MaxOpenConns int    `yaml:"maxOpenConns"`
+		MaxLifetime  int    `yaml:"maxLifetime"`
 	}
-	LogLevel string `yaml:"loglevel"`
+	Log struct {
+		Level      string `yaml:"level"`
+		Path       string `yaml:"path"`
+		MaxBackups int    `yaml:"maxBackups"`
+		MaxAge     int    `yaml:"maxAge"`
+		LogFormat  string `yaml:"logFormat"`
+		ToStd      bool   `yaml:"toStd"`
+	}
 	Jwt struct {
 		Expired time.Duration `yaml:"expired"`
-		Secret string `yaml:"secret"`
+		Secret  string        `yaml:"secret"`
 	}
 }
 
 var (
-	Conf = &Config{}
-	Jwt = &Conf.Jwt
+	Conf     = &Config{}
+	Jwt      = &Conf.Jwt
 	Database = &Conf.Database
+	LogConf  = &Conf.Log
 )
 
 func init() {

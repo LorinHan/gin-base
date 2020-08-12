@@ -1,16 +1,28 @@
 database:
-  dbtype: mysql
+  dbType: mysql
   host: 127.0.0.1
-  username: root
-  password: joker8133xx
-  dbname: test
+  userName: root
+  passWord: joker8133xx
+  dbName: test
   args: charset=utf8&parseTime=True&loc=Local
   maxIdleConns: 5
   maxOpenConns: 30
   maxLifetime: 30
 
-# debug info warning error panic fatal trace
-loglevel: debug
+log:
+  # debug info warn error panic fatal
+  level: debug
+  path: ./logs/gin-base.log
+  # 日志文件最多保存多少个备份
+  maxBackups: 5
+  # 文件最多保存多少天
+  maxAge: 7
+  # console / json
+  logFormat: console
+  # 是否输出到控制台
+  toStd: true
+
 jwt:
+  # hours
   expired: 2
   secret: iwqjhda8232bjgh432cicadasmileiwqj1c2Vybcadashda8gh432cicad232bjgh432cica8232bjgha8232bja

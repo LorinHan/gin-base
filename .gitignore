@@ -1,6 +1,7 @@
 _Store
 *.log
 *.gz
-logs
 .idea
+logs
 .DS_Store
+*_test.go

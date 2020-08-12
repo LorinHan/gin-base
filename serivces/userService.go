@@ -5,11 +5,7 @@ import (
 	"gin-base/models"
 )
 
-type userService struct{}
-
-//var UserService = &serService{}
-
-func (userService) FindUserByPwd(password string) ([]*models.User, error) {
+func FindUserByPwd(password string) ([]*models.User, error) {
 	users := models.FindUserByPwd(password)
 	if len(users) <= 0 {
 		return nil, errors.New("not found")

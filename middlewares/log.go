@@ -1,91 +1,107 @@
 package middlewares
 
 import (
-	"fmt"
 	"gin-base/conf"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"github.com/natefinch/lumberjack"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"os"
-	"path"
-	"time"
 )
 
-func Logger() *logrus.Logger {
-	now := time.Now()
-	logFilePath := ""
-	if dir, err := os.Getwd(); err == nil {
-		logFilePath = dir + "/logs/"
-	}
-	if err := os.MkdirAll(logFilePath, 0777); err != nil {
-		fmt.Println(err.Error())
-	}
-	logFileName := now.Format("2006-01-02") + ".logs"
-	//日志文件
-	fileName := path.Join(logFilePath, logFileName)
-	if _, err := os.Stat(fileName); err != nil {
-		if _, err := os.Create(fileName); err != nil {
-			fmt.Println(err.Error())
-		}
-	}
-	//写入文件
-	src, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	if err != nil {
-		fmt.Println("err", err)
+const (
+	// EncoderConfig
+	TIME_KEY       = "time"
+	LEVLE_KEY      = "level"
+	NAME_KEY       = "logger"
+	CALLER_KEY     = "caller"
+	MESSAGE_KEY    = "msg"
+	STACKTRACE_KEY = "stacktrace"
+
+	// 每个日志文件保存的最大尺寸 单位：M
+	MAX_SIZE = 10
+)
+
+// 设置日志级别、输出格式和日志文件的路径
+func SetLogs() {
+	logConf := conf.LogConf
+	logLevel := parseLevel(logConf.Level)
+	encoderConfig := zapcore.EncoderConfig{
+		TimeKey:        TIME_KEY,
+		LevelKey:       LEVLE_KEY,
+		NameKey:        NAME_KEY,
+		CallerKey:      CALLER_KEY,
+		MessageKey:     MESSAGE_KEY,
+		StacktraceKey:  STACKTRACE_KEY,
+		LineEnding:     zapcore.DefaultLineEnding,
+		EncodeLevel:    zapcore.CapitalLevelEncoder,    // 大写编码器
+		EncodeTime:     zapcore.ISO8601TimeEncoder,     // ISO8601 UTC 时间格式
+		EncodeDuration: zapcore.SecondsDurationEncoder, //
+		EncodeCaller:   zapcore.ShortCallerEncoder,     // 短路径编码器(相对路径+行号)
+		EncodeName:     zapcore.FullNameEncoder,
 	}
 
-	//实例化
-	logger := logrus.New()
+	// 设置日志输出格式 (json / console)
+	var encoder zapcore.Encoder
+	switch logConf.LogFormat {
+	case "json":
+		encoder = zapcore.NewJSONEncoder(encoderConfig)
+	default:
+		encoder = zapcore.NewConsoleEncoder(encoderConfig)
+	}
 
-	//设置输出
-	logger.Out = src
+	// 添加日志切割归档功能
+	hook := lumberjack.Logger{
+		Filename:   logConf.Path,       // 日志文件路径
+		MaxSize:    MAX_SIZE,           // 每个日志文件保存的最大尺寸 单位：M
+		MaxBackups: logConf.MaxBackups, // 日志文件最多保存多少个备份
+		MaxAge:     logConf.MaxAge,     // 文件最多保存多少天
+		Compress:   true,               // 是否压缩
+	}
 
-	//设置日志级别
-	if level, err := logrus.ParseLevel(conf.Conf.LogLevel); err == nil {
-		logger.SetLevel(level)
+	var outPut zapcore.WriteSyncer
+
+	if logConf.ToStd {
+		outPut = zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stderr), zapcore.AddSync(&hook))
 	} else {
-		logger.SetLevel(logrus.DebugLevel)
+		outPut = zapcore.NewMultiWriteSyncer(zapcore.AddSync(&hook))
 	}
-	//设置日志格式
-	logger.SetFormatter(&logrus.TextFormatter{
-		TimestampFormat: "2006-01-02 15:04:05",
-	})
-	return logger
+
+	core := zapcore.NewCore(
+		encoder,                        // 编码器配置
+		outPut,                         // 打印到控制台和文件
+		zap.NewAtomicLevelAt(logLevel), // 日志级别
+	)
+
+	var logger *zap.Logger
+	if logLevel == zap.DebugLevel {
+		// 开启文件及行号
+		caller := zap.AddCaller()
+		// 开启开发模式，堆栈跟踪
+		development := zap.Development()
+		logger = zap.New(core, caller, development)
+	} else {
+		logger = zap.New(core)
+	}
+
+	// 将自定义的logger替换为全局的logger
+	zap.ReplaceGlobals(logger)
 }
 
-func LoggerToFile() gin.HandlerFunc {
-	logger := Logger()
-	return func(c *gin.Context) {
-		// 开始时间
-		startTime := time.Now()
-
-		// 处理请求
-		c.Next()
-
-		// 结束时间
-		endTime := time.Now()
-
-		// 执行时间
-		latencyTime := endTime.Sub(startTime)
-
-		// 请求方式
-		reqMethod := c.Request.Method
-
-		// 请求路由
-		reqUri := c.Request.RequestURI
-
-		// 状态码
-		statusCode := c.Writer.Status()
-
-		// 请求IP
-		clientIP := c.ClientIP()
-
-		//日志格式
-		logger.Infof("| %3d | %13v | %15s | %s | %s |",
-			statusCode,
-			latencyTime,
-			clientIP,
-			reqMethod,
-			reqUri,
-		)
+func parseLevel(val string) zapcore.Level {
+	switch val {
+	case "debug":
+		return zap.DebugLevel
+	case "info":
+		return zap.InfoLevel
+	case "warn":
+		return zap.WarnLevel
+	case "error":
+		return zap.ErrorLevel
+	case "panic":
+		return zap.PanicLevel
+	case "fatal":
+		return zap.FatalLevel
+	default:
+		return zap.DebugLevel
 	}
 }

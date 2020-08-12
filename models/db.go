@@ -15,11 +15,11 @@ func init() {
 	var err error
 	db, err = gorm.Open(dbConfig.DbType, dbConfig.UserName+":"+dbConfig.Password+"@/"+dbConfig.DbName+"?"+dbConfig.Args)
 	if err != nil {
-		fmt.Printf("mysql connect error %v", err)
+		fmt.Printf("mysql connect error %v\n", err)
 		return
 	}
 	if db.Error != nil {
-		fmt.Printf("database error %v", db.Error)
+		fmt.Printf("database error %v\n", db.Error)
 		return
 	}
 	db.LogMode(true)
@@ -30,4 +30,8 @@ func init() {
 		lifetime = 15 // 默认15秒超时
 	}
 	db.DB().SetConnMaxLifetime(time.Second * time.Duration(lifetime)) // 建立连接的最大生命周期
+}
+
+func DBClose() {
+	db.Close()
 }

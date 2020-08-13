@@ -10,18 +10,18 @@ database:
   maxLifetime: 30
 
 log:
-  # debug info warn error panic fatal
+  # 日志级别，debug info warn error panic fatal
   level: debug
   path: ./logs/gin-base.log
-  # 日志文件最多保存多少个备份
-  maxBackups: 5
+  # 日志文件最多保存多少个份日志，maxBackups和maxAge都设置为0，则不会删除任何日志文件，全部保留
+  maxBackups: 0
   # 文件最多保存多少天
-  maxAge: 7
-  # 每个日志文件保存的最大尺寸 单位：M
+  maxAge: 0
+  # 每个日志文件保存的最大尺寸 单位：M，超出后会进行归档压缩
   maxSize: 10
-  # console / json
+  # 输出方式，console / json
   logFormat: console
-  # 是否输出到控制台
+  # 是否打印到控制台
   toStd: true
 
 jwt:

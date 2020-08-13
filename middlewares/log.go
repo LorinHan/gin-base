@@ -25,14 +25,8 @@ func init() {
 	if logConf.Path == "" {
 		logConf.Path = "./logs/gin-base.log"
 	}
-	if logConf.MaxBackups == 0 {
-		logConf.MaxBackups = 5
-	}
-	if logConf.MaxAge == 0 {
-		logConf.MaxAge = 5
-	}
 	if logConf.MaxSize == 0 {
-		logConf.MaxSize = 5
+		logConf.MaxSize = 20
 	}
 	if logConf.LogFormat == "" {
 		logConf.LogFormat = "console"

@@ -96,6 +96,7 @@ func Log() (gin.HandlerFunc, gin.HandlerFunc) {
 	 */
 	stack := false
 	if logLevel == zap.DebugLevel {
+		// ErrorLevel 开发中报错了再打印堆栈
 		logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
 	} else {
 		logger = zap.New(core, zap.AddCaller())

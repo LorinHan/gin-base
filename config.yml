@@ -17,6 +17,8 @@ log:
   maxBackups: 5
   # 文件最多保存多少天
   maxAge: 7
+  # 每个日志文件保存的最大尺寸 单位：M
+  maxSize: 10
   # console / json
   logFormat: console
   # 是否输出到控制台

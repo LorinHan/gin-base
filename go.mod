@@ -12,10 +12,9 @@ require (
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
-	github.com/natefinch/lumberjack v2.0.0+incompatible
-	github.com/sirupsen/logrus v1.6.0
 	go.uber.org/zap v1.15.0
 	golang.org/x/sys v0.0.0-20200810151505-1b9f1253b3ed // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.3.0
 )

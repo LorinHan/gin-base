@@ -54,6 +54,7 @@ func ParseToken(tokenString string) (*JwtUser, error) {
 func Auth() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		// 从请求头中获取token
+		panic("")
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
 			rest.Error(c, "请求头中auth为空")

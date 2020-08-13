@@ -25,6 +25,7 @@ type Config struct {
 		Path       string `yaml:"path"`
 		MaxBackups int    `yaml:"maxBackups"`
 		MaxAge     int    `yaml:"maxAge"`
+		MaxSize    int    `yaml:maxSize`
 		LogFormat  string `yaml:"logFormat"`
 		ToStd      bool   `yaml:"toStd"`
 	}

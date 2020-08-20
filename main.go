@@ -5,7 +5,12 @@ import (
 	"gin-base/middlewares"
 	"gin-base/router"
 	"github.com/gin-gonic/gin"
+	"runtime"
 )
+
+func init() {
+	runtime.GOMAXPROCS(runtime.NumCPU() / 2)
+}
 
 func main() {
 	// 生产环境下开启

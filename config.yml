@@ -25,6 +25,6 @@ log:
   toStd: true
 
 jwt:
-  # hours
+  # 有效期，单位：hours
   expired: 2
-  secret: iwqjhda823fgk2cicadasmileiwqj1c2V
+  secret: iwqjhda823fgK2cicaGasmileiwqj1c2V

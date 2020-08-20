@@ -5,9 +5,15 @@ import (
 	"net/http"
 )
 
+/**
+ * @description: restful接口，统一返回风格为 {"status": xxx, "data": xxx, "message": xxx}
+ * 	除非程序报错，出现panic，否则http协议的状态码始终为200
+ * 	而接口真正的状态码，在 Rest 中的 status
+ * @author: Lorin
+ * @time: 2020/7/19 上午11:54
+ */
 type Rest struct {
 	Status int `json:"status"`
-	// 加上json的话，返回时的反序列化会转为指定的字符串，这里就变成小写的d开头了
 	Data    interface{} `json:"data"`
 	Message string      `json:"message"`
 }

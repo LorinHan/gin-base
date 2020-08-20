@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"crypto"
 	"errors"
 	"gin-base/conf"
 	"gin-base/utils/rest"
@@ -18,7 +19,7 @@ type JwtUser struct {
 
 var TokenExpireDuration = time.Hour * conf.Jwt.Expired
 var MySecret = []byte(conf.Jwt.Secret)
-
+var SigningMethodSHA1  *jwt.SigningMethodHMAC
 // GenToken，生成token
 func GenToken(username string) (string, error) {
 	c := JwtUser{
@@ -29,8 +30,14 @@ func GenToken(username string) (string, error) {
 			Issuer:    "Lorin",                               // 签发人
 		},
 	}
-	// 使用指定的签名方法创建签名对象
-	token := jwt.NewWithClaims(jwt.SigningMethodHS512, c)
+	// 方式1：用jwt中不包含的签名方法创建签名对象（如sha1），可以参照源码自定义：
+	SigningMethodSHA1 = &jwt.SigningMethodHMAC{"SHA1", crypto.SHA1}
+	jwt.RegisterSigningMethod(SigningMethodSHA1.Alg(), func() jwt.SigningMethod {
+		return SigningMethodSHA1
+	})
+	token := jwt.NewWithClaims(SigningMethodSHA1, c)
+	// 方式2：使用jwt库中已有的签名方法创建签名对象
+	//token := jwt.NewWithClaims(jwt.SigningMethodHS512, c)
 	// 使用指定的secret签名并获得完整的编码后的字符串token
 	return token.SignedString(MySecret)
 }

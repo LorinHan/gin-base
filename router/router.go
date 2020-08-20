@@ -4,6 +4,7 @@ import (
 	ct "gin-base/controllers"
 	"gin-base/middlewares"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func Init(r *gin.Engine) {
@@ -14,4 +15,10 @@ func Init(r *gin.Engine) {
 		//user.POST("/login4/:username/:password", controllers.UserCtl.Login4)
 		//user.GET("/find/page/:page", controllers.UserCtl.FindUsersNative)
 	}
+
+	// 使用模板引擎
+	r.LoadHTMLGlob("templates/*")
+	r.GET("/testTemp", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "main.html", gin.H{"title": "tempTest", "content": "内容"})
+	})
 }

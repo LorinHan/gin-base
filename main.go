@@ -9,13 +9,11 @@ import (
 
 func main() {
 	// 生产环境下开启
-	// gin.SetMode(gin.ReleaseMode)
+	//gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
-	zapLogger, zapRecovery := middlewares.Log()
-	r.Use(zapLogger)
-	r.Use(zapRecovery)
-
+	middlewares.InitGinLogger(r)
 	router.Init(r)
+
 	r.Run(":8080")
 }

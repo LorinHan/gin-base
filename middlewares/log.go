@@ -7,7 +7,9 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -33,6 +35,28 @@ func init() {
 	}
 }
 
+func InitGinLogger(r *gin.Engine) {
+	if logLevel == zap.DebugLevel {
+		logPath := logConf.Path
+		if strings.Contains(logPath, ".log") {
+			logPath = strings.Replace(logPath, ".log", ".debug.log", -1)
+		}
+		logfile, _ := os.Create(logPath)
+		if logConf.ToStd {
+			gin.DefaultWriter = io.MultiWriter(os.Stdout, logfile)
+		} else {
+			gin.DefaultWriter = io.MultiWriter(logfile)
+		}
+		gin.ForceConsoleColor()
+		r.Use(gin.Logger())
+		r.Use(gin.Recovery())
+	} else {
+		zapLogger, zapRecovery := Log()
+		r.Use(zapLogger)
+		r.Use(zapRecovery)
+	}
+}
+
 /**
  * @description: 配置zap日志、lumberjack日志切割归档，并将设置后的zap日志全局置入 后续的程序中如果需要写日志 直接zap.L()即可
  * @return: 日志中间件, recovery中间件
@@ -50,14 +74,10 @@ func Log() (gin.HandlerFunc, gin.HandlerFunc) {
 		StacktraceKey:  "stacktrace",
 		EncodeLevel:    zapcore.CapitalLevelEncoder,
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeTime:     zapcore.ISO8601TimeEncoder, // ISO8601 UTC 时间格式
-		EncodeDuration: zapcore.SecondsDurationEncoder,
+		EncodeTime:     zapcore.RFC3339TimeEncoder, // ISO8601 UTC 时间格式
+		EncodeDuration: zapcore.StringDurationEncoder,
 		EncodeCaller:   zapcore.ShortCallerEncoder, // 短路径编码器
 		EncodeName:     zapcore.FullNameEncoder,
-	}
-	// 如果是debug模式，采用CapitalColorLevelEncoder输出彩色的比较好看
-	if logLevel == zap.DebugLevel {
-		encoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 
 	// 设置日志输出格式 (json / console)
@@ -94,17 +114,11 @@ func Log() (gin.HandlerFunc, gin.HandlerFunc) {
 	 * 	zap.AddStacktrace：跟踪对应级别的堆栈，打印时的输出形式较为友好，适用于开发环境下
 	 * 	ginzap.RecoveryWithZap(zap.L(), true)：第二位参数表示是否跟踪堆栈，不过这个堆栈信息打印出来十分不友好，换行都没有，适用于生产环境下的记录
 	 */
-	stack := false
-	if logLevel == zap.DebugLevel {
-		// ErrorLevel 开发中报错了再打印堆栈
-		logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
-	} else {
-		logger = zap.New(core, zap.AddCaller())
-		stack = true
-	}
+	//logger = zap.New(core, zap.AddCaller())
+	logger = zap.New(core)
 	// 将自定义的logger替换为全局的logger
 	zap.ReplaceGlobals(logger)
-	return ginzap.Ginzap(zap.L(), time.RFC3339, false), ginzap.RecoveryWithZap(zap.L(), stack)
+	return Ginzap(zap.L(), false), ginzap.RecoveryWithZap(zap.L(), true)
 }
 
 func parseLevel(val string) zapcore.Level {
@@ -123,5 +137,38 @@ func parseLevel(val string) zapcore.Level {
 		return zap.FatalLevel
 	default:
 		return zap.DebugLevel
+	}
+}
+
+func Ginzap(logger *zap.Logger, utc bool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		start := time.Now()
+		// some evil middlewares modify this values
+		path := c.Request.URL.Path
+		query := c.Request.URL.RawQuery
+		c.Next()
+
+		end := time.Now()
+		latency := end.Sub(start)
+		if utc {
+			end = end.UTC()
+		}
+
+		if len(c.Errors) > 0 {
+			// Append error field if this is an erroneous request.
+			for _, e := range c.Errors.Errors() {
+				logger.Error(e)
+			}
+		} else {
+			logger.Info(path,
+				zap.Int("status", c.Writer.Status()),
+				zap.String("method", c.Request.Method),
+				zap.String("path", path),
+				zap.String("query", query),
+				zap.String("ip", c.ClientIP()),
+				zap.String("user-agent", c.Request.UserAgent()),
+				zap.Duration("latency", latency),
+			)
+		}
 	}
 }

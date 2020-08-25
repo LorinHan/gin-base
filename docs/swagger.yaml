@@ -1,0 +1,44 @@
+basePath: /
+definitions:
+  rest.Rest:
+    properties:
+      data:
+        type: object
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+host: 127.0.0.1:8080
+info:
+  contact: {}
+  license: {}
+  title: gin项目基本框架
+  version: 2.0.0
+paths:
+  /user/needAuth:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        # 本接口需要验证token
+        ### - token请求头为：Authorization
+        ### - token请求体为：Bearer + 空格 + token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"status": 200, "data": null, "message": "success"}'
+          schema:
+            $ref: '#/definitions/rest.Rest'
+      security:
+      - token: []
+      summary: 验证token
+      tags:
+      - 用户
+securityDefinitions:
+  token:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

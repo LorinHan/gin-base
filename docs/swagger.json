@@ -1,0 +1,64 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "gin项目基本框架",
+        "contact": {},
+        "license": {},
+        "version": "2.0.0"
+    },
+    "host": "127.0.0.1:8080",
+    "basePath": "/",
+    "paths": {
+        "/user/needAuth": {
+            "get": {
+                "security": [
+                    {
+                        "token": []
+                    }
+                ],
+                "description": "# 本接口需要验证token\n### - token请求头为：Authorization\n### - token请求体为：Bearer + 空格 + token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "验证token",
+                "responses": {
+                    "200": {
+                        "description": "{\"status\": 200, \"data\": null, \"message\": \"success\"}",
+                        "schema": {
+                            "$ref": "#/definitions/rest.Rest"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "rest.Rest": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

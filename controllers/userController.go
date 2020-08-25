@@ -24,9 +24,16 @@ func JwtLogin(c *gin.Context) {
 	rest.New(c, 2002, nil, "鉴权失败")
 }
 
-/**
- * 测试获取jwt参数
-*/
+// @Summary 验证token
+// @Tags 用户
+// @Accept json
+// @Description # 本接口需要验证token
+// @Description ### - token请求头为：Authorization
+// @Description ### - token请求体为：Bearer + 空格 + token
+// @Produce  json
+// @Security token
+// @Success 200 {object} rest.Rest "{"status": 200, "data": null, "message": "success"}"
+// @Router /user/needAuth [get]
 func NeedAuth(c *gin.Context) {
 	user := c.MustGet("user").(*middlewares.JwtUser)
 	rest.Success(c, user)

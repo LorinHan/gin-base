@@ -27,7 +27,6 @@ func GenToken(username string) (string, error) {
 		"role",
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(), // 过期时间
-			Issuer:    "Lorin",                               // 签发人
 		},
 	}
 	// 方式1：用jwt中不包含的签名方法创建签名对象（如sha1），可以参照源码自定义：

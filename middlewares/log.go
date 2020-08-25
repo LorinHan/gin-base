@@ -23,7 +23,9 @@ var (
  * @author: Lorin
  * @time: 2020/8/13 上午10:35
  */
-func init() {
+func varInit() {
+	logConf  = conf.LogConf
+	logLevel = parseLevel(logConf.Level)
 	if logConf.Path == "" {
 		logConf.Path = "./logs/gin-base.log"
 	}
@@ -36,6 +38,7 @@ func init() {
 }
 
 func InitGinLogger(r *gin.Engine) {
+	varInit()
 	if logLevel == zap.DebugLevel {
 		logPath := logConf.Path
 		if strings.Contains(logPath, ".log") {
@@ -43,7 +46,7 @@ func InitGinLogger(r *gin.Engine) {
 		}
 		logfile, _ := os.Create(logPath)
 		if logConf.ToStd {
-			gin.DefaultWriter = io.MultiWriter(os.Stdout, logfile)
+			gin.DefaultWriter = io.MultiWriter(logfile, os.Stdout)
 		} else {
 			gin.DefaultWriter = io.MultiWriter(logfile)
 		}

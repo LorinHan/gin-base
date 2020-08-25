@@ -10,6 +10,10 @@ import (
 )
 
 type Config struct {
+	Server struct {
+		Port string `yaml:"port"`
+		Swagger bool `yaml:"swagger"`
+	}
 	Database struct {
 		DbType       string `yaml:"dbType"`
 		Host         string `yaml:"host"`
@@ -41,6 +45,7 @@ var (
 	Jwt      = &Conf.Jwt
 	Database = &Conf.Database
 	LogConf  = &Conf.Log
+	Server   = &Conf.Server
 )
 
 /**

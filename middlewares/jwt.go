@@ -17,9 +17,18 @@ type JwtUser struct {
 	jwt.StandardClaims
 }
 
+func init() {
+	// 方式1：用jwt中不包含的签名方法创建签名对象（如sha1），可以参照源码自定义：
+	SigningMethodSHA1 = &jwt.SigningMethodHMAC{"SHA1", crypto.SHA1}
+	jwt.RegisterSigningMethod(SigningMethodSHA1.Alg(), func() jwt.SigningMethod {
+		return SigningMethodSHA1
+	})
+}
+
 var TokenExpireDuration = time.Hour * conf.Jwt.Expired
 var MySecret = []byte(conf.Jwt.Secret)
-var SigningMethodSHA1  *jwt.SigningMethodHMAC
+var SigningMethodSHA1 *jwt.SigningMethodHMAC
+
 // GenToken，生成token
 func GenToken(username string) (string, error) {
 	c := JwtUser{
@@ -29,14 +38,10 @@ func GenToken(username string) (string, error) {
 			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(), // 过期时间
 		},
 	}
-	// 方式1：用jwt中不包含的签名方法创建签名对象（如sha1），可以参照源码自定义：
-	SigningMethodSHA1 = &jwt.SigningMethodHMAC{"SHA1", crypto.SHA1}
-	jwt.RegisterSigningMethod(SigningMethodSHA1.Alg(), func() jwt.SigningMethod {
-		return SigningMethodSHA1
-	})
+
 	token := jwt.NewWithClaims(SigningMethodSHA1, c)
 	// 方式2：使用jwt库中已有的签名方法创建签名对象
-	//token := jwt.NewWithClaims(jwt.SigningMethodHS512, c)
+	// token := jwt.NewWithClaims(jwt.SigningMethodHS512, c)
 	// 使用指定的secret签名并获得完整的编码后的字符串token
 	return token.SignedString(MySecret)
 }
@@ -81,11 +86,11 @@ func Auth() func(c *gin.Context) {
 			return
 		}
 		// 验证角色
-		//if mc.Role != role {
+		// if mc.Role != role {
 		//	rest.New(c, 403, nil, "没有"+role+"角色权限")
 		//	c.Abort()
 		//	return
-		//}
+		// }
 		// 将当前请求的user信息保存到请求的上下文c上
 		c.Set("user", mc)
 		c.Next() // 后续的处理函数可以用过 c.Get("user").(*auth.JwtUser) 来获取当前请求的用户信息

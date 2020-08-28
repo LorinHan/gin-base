@@ -23,3 +23,25 @@
     go get -u github.com/swaggo/swag/cmd/swag
     swag init -h 可以查看相关命令
     ```
+  
+- 2020-08-28 
+    - 工具类中加入了`JsonTime`、models中加入了`RowsToMaps`
+      - `JsonTime`可以解决数据库中时间字段的格式问题，例如：
+      ```go
+        type Resident struct {
+        	ID                uint      `json:"id"`
+        	CreatedAt         utils.Time `json:"createdAt"`
+        	UpdatedAt         utils.Time `json:"updatedAt"`
+        }
+      ```
+      - `RowsToMaps`主要是用于解决，gorm中没有提供将`rows`结果集转换为map的功能
+      ```go
+        func TestRowsToMaps(t *testing.T) {
+        	rows, _ := models.Db().Table("users").Rows()
+        	defer rows.Close()
+        	result := models.RowsToMaps(rows)
+        	for i, v := range *result {
+        	    fmt.Println(i, *val)
+              }
+        }
+      ```

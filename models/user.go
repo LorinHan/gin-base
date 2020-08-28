@@ -12,7 +12,6 @@ type User struct {
 
 func FindUserByPwd(password string) []*User {
 	var users []*User
-	//mysql.DB.Where("password = ?", password).Find(&users)
 	db.Where("password = ?", password).Offset(1).Limit(2).Find(&users)
 	return users
 }
@@ -41,3 +40,13 @@ func FindUsersNative(begin int, size int) []*User {
 	}
 	return users
 }
+func TestRows2Maps(begin int, size int) *[]*map[string]string {
+	rows, err := db.Raw("select * from users limit ?, ?", begin, size).Rows()
+	if err != nil {
+		log.Print(err)
+	}
+	defer rows.Close()
+	result := RowsToMaps(rows)
+	return result
+}
+

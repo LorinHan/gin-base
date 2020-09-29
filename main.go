@@ -23,7 +23,7 @@ func init() {
 // @BasePath /
 func main() {
 	// 生产环境下开启
-	//gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 
 	middlewares.InitGinLogger(r)

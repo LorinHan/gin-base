@@ -16,6 +16,7 @@ type Config struct {
 	}
 	Database struct {
 		DbType       string `yaml:"dbType"`
+		LogMode      bool   `yaml:"logMode"`
 		Host         string `yaml:"host"`
 		UserName     string `yaml:"userName"`
 		Password     string `yaml:"passWord"`
@@ -38,6 +39,7 @@ type Config struct {
 		Expired time.Duration `yaml:"expired"`
 		Secret  string        `yaml:"secret"`
 	}
+	PageSize uint `yaml:"pageSize"`
 }
 
 var (
@@ -46,6 +48,7 @@ var (
 	Database = &Conf.Database
 	LogConf  = &Conf.Log
 	Server   = &Conf.Server
+	PageSize = &Conf.PageSize
 )
 
 /**

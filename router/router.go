@@ -12,8 +12,8 @@ func Init(r *gin.Engine) {
 	user := r.Group("user", middlewares.Auth()) // 中间件可以放在普通路由也可以放在Group上
 	{
 		user.GET("/needAuth", ct.NeedAuth)
-		//user.POST("/login4/:username/:password", controllers.UserCtl.Login4)
-		//user.GET("/find/page/:page", controllers.UserCtl.FindUsersNative)
+		// user.POST("/login4/:username/:password", controllers.UserCtl.Login4)
+		// user.GET("/find/page/:page", controllers.UserCtl.FindUsersNative)
 	}
 
 	// 使用模板引擎

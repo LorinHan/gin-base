@@ -13,7 +13,7 @@ var db *gorm.DB
 func init() {
 	dbConfig := conf.Database
 	var err error
-	db, err = gorm.Open(dbConfig.DbType, dbConfig.UserName+":"+dbConfig.Password+"@/"+dbConfig.DbName+"?"+dbConfig.Args)
+	db, err = gorm.Open(dbConfig.DbType, dbConfig.UserName+":"+dbConfig.Password+"@tcp("+dbConfig.Host+")/"+dbConfig.DbName+"?"+dbConfig.Args)
 	if err != nil {
 		fmt.Printf("mysql connect error %v\n", err)
 		return
@@ -22,7 +22,7 @@ func init() {
 		fmt.Printf("database error %v\n", db.Error)
 		return
 	}
-	db.LogMode(true)
+	db.LogMode(conf.Database.LogMode)
 	db.DB().SetMaxIdleConns(dbConfig.MaxIdleConns) // 最大空闲连接数
 	db.DB().SetMaxOpenConns(dbConfig.MaxOpenConns) // 最大连接数
 	lifetime := dbConfig.MaxLifetime
@@ -34,4 +34,24 @@ func init() {
 
 func DBClose() {
 	db.Close()
+}
+
+type tf func(db *gorm.DB) error
+
+/**
+ * @description: 传入匿名函数进行具体事务操作
+ * @params: tf -> 具体操作
+ * @return: error -> 不为空代表错误
+ * @author: Lorin
+ * @time: 2020/9/15 上午11:45
+ */
+func Tx(tf tf) error {
+	tx := db.Begin()
+	if err := tf(tx); err != nil {
+		tx.Rollback()
+		tx.Close()
+		return err
+	}
+	tx.Commit()
+	return nil
 }

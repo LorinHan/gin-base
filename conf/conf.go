@@ -1,11 +1,10 @@
 package conf
 
 import (
+	"gin-base/utils/pathUtil"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
-	"os"
-	"strings"
 	"time"
 )
 
@@ -60,32 +59,16 @@ var (
  * @time: 2020/8/13 下午6:19
  */
 func init() {
-	pwd, _ := os.Getwd()
-	sp := string(os.PathSeparator)
-	splits := strings.Split(pwd, sp)
-	for i := len(splits); i > 0; i-- {
-		path := strings.Join(splits[0:i], sp) + sp + "config.yml"
-		if pathExists(path) {
-			configFile, fileErr := ioutil.ReadFile(path)
-			if fileErr != nil {
-				log.Print(fileErr)
-			}
-			err := yaml.Unmarshal(configFile, &Conf)
-			if err != nil {
-				log.Print("config file parse error")
-			}
-			break
-		}
+	path := pathUtil.FilePath("config.yml")
+	if path == "" {
+		log.Fatal("could not found config file")
 	}
-}
-
-func pathExists(path string) bool {
-	_, err := os.Stat(path)
-	if err == nil {
-		return true
+	configFile, fileErr := ioutil.ReadFile(path)
+	if fileErr != nil {
+		log.Print(fileErr)
 	}
-	if os.IsNotExist(err) {
-		return false
+	err := yaml.Unmarshal(configFile, &Conf)
+	if err != nil {
+		log.Print("config file parse error")
 	}
-	return false
 }

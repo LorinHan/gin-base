@@ -4,18 +4,12 @@
 [GIN-debug] POST   /login                    --> gin-base/controllers.JwtLogin (4 handlers)
 [GIN-debug] GET    /user/needAuth            --> gin-base/controllers.NeedAuth (5 handlers)
 [GIN-debug] Loaded HTML Templates (6): 
-	- 
-	- footer.html
 	- footer
 	- header.html
 	- header
 	- main.html
+	- 
+	- footer.html
 
 [GIN-debug] GET    /testTemp                 --> gin-base/router.Init.func1 (4 handlers)
 [GIN-debug] Listening and serving HTTP on :8080
-[GIN] 2020/08/25 - 15:32:55 |[97;42m 200 [0m|     347.133µs |       127.0.0.1 |[97;44m GET     [0m "/swagger/index.html"
-[GIN] 2020/08/25 - 15:32:55 |[97;42m 200 [0m|     169.624µs |       127.0.0.1 |[97;44m GET     [0m "/swagger/swagger-ui.css"
-[GIN] 2020/08/25 - 15:32:55 |[97;42m 200 [0m|     499.166µs |       127.0.0.1 |[97;44m GET     [0m "/swagger/swagger-ui-standalone-preset.js"
-[GIN] 2020/08/25 - 15:32:55 |[97;42m 200 [0m|    8.127245ms |       127.0.0.1 |[97;44m GET     [0m "/swagger/swagger-ui-bundle.js"
-[GIN] 2020/08/25 - 15:32:55 |[90;47m 304 [0m|       80.79µs |       127.0.0.1 |[97;44m GET     [0m "/swagger.json"
-[GIN] 2020/08/25 - 15:32:56 |[97;42m 200 [0m|    3.222726ms |       127.0.0.1 |[97;44m GET     [0m "/swagger/favicon-32x32.png"

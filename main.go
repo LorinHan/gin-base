@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gin-base/conf"
 	"gin-base/middlewares"
 	"gin-base/router"
@@ -31,6 +32,6 @@ func main() {
 		middlewares.SwaggerMiddleware(r)
 	}
 	router.Init(r)
-
+	fmt.Println("conf", conf.Conf)
 	r.Run(":" + conf.Server.Port)
 }
